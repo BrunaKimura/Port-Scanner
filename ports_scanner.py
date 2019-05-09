@@ -19,6 +19,10 @@ if modo == '1':
     print('----------------------------------------------------')
     lista_hosts = [host]
 elif modo == '2':
+    print("Digite a subnet e mascara no seguinte formato: \n")
+    hosts = input("ex.: 1.2.3.4/24: ")
+    print("aguarde um momento ... ")
+    nm.scan(hosts)
     lista_hosts = nm.all_hosts()
 else:
     lista_hosts = ["127.0.0.1"]
@@ -32,10 +36,8 @@ while not any([range_portas=='1' or range_portas=='2']):
 
 print('----------------------------------------------------')
 if range_portas == '1':
-    print("Digite o início e o fim do range de portas\n")
-    inicio = input("Início: ")
-    fim = input("Fim: ")
-    lista_portas = inicio + '-' + fim
+    print("Digite o início e o fim do range de portas no seguinte formato: \n")
+    lista_portas = input("inicio-fim: ")
     print('----------------------------------------------------')
 
 else:
@@ -50,8 +52,9 @@ for host in lista_hosts:
     print('Host : %s (%s)' % (host, nm[host].hostname()))
     print('Estado : %s' % nm[host].state())
 
-    portas = nm[host]['tcp'].keys()
+    for proto in nm[host].all_protocols():
+        portas = nm[host][proto].keys()
 
-    print('----------------------------------------------------')
-    for porta in portas:
-        print ('porta : %s\testado : %s\tnome : %s' % (porta, nm[host]['tcp'][porta]['state'], nm[host]['tcp'][porta]['name']))
+        print('----------------------------------------------------')
+        for porta in portas:
+            print ('porta : %s\testado : %s\tnome : %s' % (porta, nm[host][proto][porta]['state'], nm[host][proto][porta]['name']))
